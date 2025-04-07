@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Web Chladni 模擬器 + AI 助手 (RAG)</title>
+    <link rel="stylesheet" href="style.css"> </head>
+<body>
+    <header>
+        <h1>Web Chladni 模擬器 + AI 助手 (RAG)</h1>
+    </header>
+
+    <div class="container">
+        <aside class="controls">
+            <h2>控制面板</h2>
+
+             <section class="control-section api-key-section">
+                <h3>OpenAI 設定</h3>
+                 <div class="control-item">
+                     <label for="apiKeyInput">API Key:</label>
+                     <input type="password" id="apiKeyInput" placeholder="輸入您的 OpenAI API Key">
+                 </div>
+                 <div class="control-item">
+                     <button id="setApiKeyBtn">設定 Key</button>
+                 </div>
+                 <p class="warning"><b>警告:</b> API Key 將僅用於本次瀏覽，請勿在不安全的環境中使用或分享。直接在前端使用 API Key 存在安全風險。</p>
+            </section>
+
+            <section class="control-section">
+                <h3>模擬控制</h3>
+                 <div class="control-item"><label for="waveNumber">波數 (k):</label><input type="number" id="waveNumber" value="5" step="0.1"></div>
+                 <div class="control-item"><label for="maxWaveNumber">最大波數 (連續):</label><input type="number" id="maxWaveNumber" value="10" step="0.1"></div>
+                 <div class="control-item"><label for="steps">連續變化步數:</label><input type="number" id="steps" value="5" min="2"></div>
+                 <div class="control-item"><label for="stepDelay">每步持續秒數:</label><input type="number" id="stepDelay" value="7" min="1" step="0.5"></div>
+                 <div class="control-item"><label for="xOffset">中心 X (0-1):</label><input type="number" id="xOffset" value="0.5" step="0.01" min="0" max="1"></div>
+                 <div class="control-item"><label for="yOffset">中心 Y (0-1):</label><input type="number" id="yOffset" value="0.5" step="0.01" min="0" max="1"></div>
+                 <div class="control-item"><label for="gamma">Gamma (阻尼):</label><input type="number" id="gamma" value="0.01" step="0.001"></div>
+                 <div class="control-item button-group">
+                     <button id="runBtn">單次執行</button>
+                     <button id="runLotBtn">連續執行</button>
+                     <button id="stopBtn" disabled>暫停</button>
+                     <button id="continueBtn" disabled>繼續</button>
+                     <button id="resetBtn" class="danger">重置參數</button> </div>
+            </section>
+
+            <section class="control-section">
+                <h3>沙子設定</h3>
+                 <div class="control-item"><label for="sandAmount">單次產生數量:</label><input type="number" id="sandAmount" value="2000" min="100"></div>
+                 <div class="control-item"><label for="sandSpeed">沙子速度 (ms):</label><input type="number" id="sandSpeed" value="50" min="10"></div>
+                 <div class="control-item button-group">
+                     <button id="generateSandBtn">產生/添加沙子</button>
+                     <button id="clearSandBtn" class="danger">清除所有沙子</button> </div>
+                 <div class="control-item button-group">
+                     <button id="startContinuousSandBtn">開始持續灑沙</button>
+                     <button id="stopContinuousSandBtn" style="display: none;" class="danger">停止持續灑沙</button>
+                 </div>
+             </section>
+
+             <section class="control-section">
+                <h3>聲音設定</h3>
+                 <div class="control-item"><label for="enableSound">啟用聲音:</label><input type="checkbox" id="enableSound"></div>
+                 <div class="control-item"><label for="amplitude">振幅 (0-1):</label><input type="number" id="amplitude" value="0.5" step="0.05" min="0" max="1"></div>
+                 <div class="control-item"><label for="soundConstantC">頻率常數 (c):</label><input type="number" id="soundConstantC" value="2.1977" step="0.1"></div>
+                 <div class="control-item button-group">
+                     <button id="updateSoundBtn">更新聲音參數</button>
+                     <span>當前頻率: <span id="currentFrequency">0</span> Hz</span>
+                 </div>
+             </section>
+
+             <section class="control-section">
+                <h3>其他</h3>
+                 <div class="control-item"><label for="showBackgroundIntensity">顯示強度背景:</label><input type="checkbox" id="showBackgroundIntensity"></div>
+                 <div class="control-item button-group">
+                     <button id="plotKBtn">繪製 K 圖</button>
+                     <button id="screenshotBtn">截圖</button>
+                 </div>
+                 <div class="control-item button-group">
+                     <button id="saveSettingsBtn">保存設定</button>
+                     <button id="loadSettingsBtn">載入設定</button>
+                 </div>
+             </section>
+
+        </aside>
+
+        <main class="simulation-area">
+            <h2>模擬區域</h2>
+            <canvas id="chladniCanvas" width="500" height="500"></canvas>
+             <p>目前沙子數量: <span id="currentSandCount">0</span></p>
+        </main>
+
+        <aside class="analysis-area">
+            <h2>K 值分析</h2>
+             <canvas id="kPlotCanvas" width="400" height="250"></canvas>
+            <div class="peak-lists">
+                <div><h3>高峰 K 值</h3><ul id="highPeaksList"></ul></div>
+                <div><h3>低峰 K 值</h3><ul id="lowPeaksList"></ul></div>
+            </div>
+        </aside>
+    </div>
+
+    <div id="chatbotContainer">
+        <button id="toggleChatbotBtn" title="開啟/關閉 AI 助手">AI</button>
+        <div id="chatbotWindow" class="hidden">
+            <div id="chatMessages">
+                <div class="message bot">您好！我是您的克拉尼圖形模擬助手。請先設定 API Key，然後可以透過文字提問或點擊「分析畫面」按鈕。</div>
+            </div>
+            <div id="chatInputContainer">
+                 <button id="analyzeScreenBtn" title="分析目前畫面與參數" disabled>分析</button> <input type="text" id="chatInput" placeholder="輸入訊息..." disabled>
+                 <button id="sendChatBtn" title="發送訊息" disabled>發送</button>
+                 <label for="enableTts" title="啟用語音講解">
+                     <input type="checkbox" id="enableTts">語音
+                 </label>
+            </div>
+             <div id="aiStatus" class="status">狀態：待命中</div>
+        </div>
+    </div>
+
+    <script src="complex.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="knowledge_embeddings.js"></script> <script src="script.js"></script>
+</body>
+</html>

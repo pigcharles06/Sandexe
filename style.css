@@ -1,0 +1,193 @@
+/* --- Root Variables --- */
+:root {
+    /* Color Palette (Blue/Grey Theme) */
+    --body-bg: #2B5170;          /* Darkest Blue/Grey for Body BG */
+    --section-bg: #306077;       /* Darker Blue/Grey for Sections/Cards */
+    --chatbot-window-bg: #3a6888;
+    --medium-blue-grey: #4D708E;
+    --light-blue-grey: #a0b0bf;
+    --border-color: #4D708E;
+    --text-color: #f0f2f5;       /* Main Light text */
+    --text-muted: #a0b0bf;       /* Lighter muted text */
+    --header-bg: #212529;
+    --header-text: #ffffff;
+    --input-bg: #4D708E;
+    --input-border: #7190A4;
+    --input-text: #ffffff;
+    --light-bg-for-elements: #f8f9fa;
+    --dark-text-on-light: #212529;
+
+    /* Accent Colors */
+    --primary-color: #20c997;     /* Mint Green/Cyan Accent */
+    --primary-dark: #19a47a;
+    --primary-light-tint: rgba(32, 201, 151, 0.1);
+
+    --secondary-color: #6c757d;
+    --secondary-dark: #5a6268;
+    --success-color: var(--primary-color);
+    --success-dark: var(--primary-dark);
+    --danger-color: #e63946;
+    --danger-dark: #c02e3a;
+    --warning-color: #f0ad4e;
+    --info-color: #5bc0de;
+    --info-dark: #3194af;
+
+    /* Shadows */
+    --shadow-color-light: rgba(0, 0, 0, 0.2);
+    --shadow-color-medium: rgba(0, 0, 0, 0.3);
+
+    /* Typography & Layout */
+    --font-family-sans-serif: 'Noto Sans TC', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --base-font-size: 16px;
+    --base-line-height: 1.6;
+    --border-radius: 6px;
+    --box-shadow: 0 3px 8px var(--shadow-color-light);
+    --box-shadow-lg: 0 6px 18px var(--shadow-color-medium);
+    --transition-speed: 0.2s;
+    --rgb-primary: 32, 201, 151;
+}
+
+/* --- Google Font Import --- */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
+
+/* --- Base Styles --- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    font-family: var(--font-family-sans-serif); font-size: var(--base-font-size); line-height: var(--base-line-height);
+    margin: 0; padding: 0; background-color: var(--body-bg); color: var(--text-color);
+    display: flex; flex-direction: column; min-height: 100vh;
+}
+
+header {
+    background-color: var(--header-bg); color: var(--header-text); padding: 0.8rem 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); position: sticky; top: 0; z-index: 1020;
+}
+header h1 { margin: 0; font-size: 1.6rem; font-weight: 500; text-align: center; }
+
+/* --- Headings --- */
+/* Ensure ALL headings within sections are light */
+h2, h3 { color: var(--text-color); font-weight: 700; margin-bottom: 0.8em; }
+h2 { font-size: 1.5rem; padding-bottom: 0.4em; border-bottom: 1px solid var(--border-color); margin-bottom: 1.2em; }
+h3 { font-size: 1.15rem; margin-top: 1.8em; /* No specific color needed, inherits from section */}
+section > h3:first-child { margin-top: 0; }
+
+/* --- Layout Container (Grid) --- */
+.container { display: grid; grid-template-columns: 1fr; gap: 25px; padding: 25px; width: 100%; max-width: 1600px; margin: 25px auto; flex-grow: 1; }
+
+/* --- Sections/Cards --- */
+.controls, .simulation-area, .analysis-area {
+    background-color: var(--section-bg); padding: 25px; border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow); border: 1px solid var(--border-color);
+    color: var(--text-color); /* Default light text for descendants */
+}
+
+/* --- Control Panel --- */
+.controls .control-section { margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--medium-blue-grey); }
+.controls .control-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.controls .control-item { margin-bottom: 15px; display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+
+/* CHANGED: Set label color explicitly to light text color */
+.controls label {
+    min-width: 140px; margin-bottom: 0; margin-right: 8px; font-weight: 400;
+    font-size: 0.9em; color: var(--text-color); /* Use main light text color */
+    flex-shrink: 0; display: inline-flex; align-items: center;
+}
+.controls label[for="apiKeyInput"] { min-width: 70px; } /* Keep specific width if needed */
+
+.controls input[type="number"],
+.controls input[type="password"],
+.controls input[type="text"] { padding: 9px 12px; border: 1px solid var(--input-border); border-radius: var(--border-radius); background-color: var(--input-bg); transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease; font-size: 0.9rem; line-height: 1.5; color: var(--input-text); }
+/* CHANGED: Placeholder color */
+.controls input::placeholder { color: var(--text-muted); opacity: 0.8; }
+.controls input[type="number"] { width: 90px; }
+.controls input[type="password"], .controls input[type="text"] { flex-grow: 1; min-width: 120px; }
+.controls input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 0.2rem rgba(var(--rgb-primary), 0.35); outline: none; }
+.controls input[type="checkbox"] { margin-left: 5px; width: auto; transform: scale(1.1); cursor: pointer; margin-right: 8px; filter: brightness(1.5) saturate(0); accent-color: var(--primary-color); }
+
+.controls .button-group { margin-top: 15px; gap: 10px; flex-basis: 100%; }
+
+.controls button { background-color: var(--primary-color); color: var(--dark-text); padding: 10px 18px; border: none; border-radius: var(--border-radius); cursor: pointer; margin: 0; font-size: 0.9rem; font-weight: 700; transition: all var(--transition-speed) ease; flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+.controls button:hover { background-color: var(--primary-dark); color: white; box-shadow: 0 3px 7px rgba(0,0,0,0.15); transform: translateY(-1px); }
+.controls button:active { transform: translateY(0); background-color: var(--primary-dark); box-shadow: inset 0 1px 2px rgba(0,0,0,0.2); }
+.controls button:disabled { background-color: #5a6268; cursor: not-allowed; box-shadow: none; color: #adb5bd; transform: none; }
+.controls button.danger { background-color: var(--danger-color); color: white; }
+.controls button.danger:hover { background-color: var(--danger-dark); }
+.controls button.danger:active { background-color: #b02a37; }
+.controls button.secondary { background-color: var(--secondary-color); color: white; }
+.controls button.secondary:hover { background-color: #5a6268; }
+.controls button.secondary:active { background-color: #565e64; }
+#setApiKeyBtn { background-color: var(--info-color); color: white;}
+#setApiKeyBtn:hover { background-color: var(--info-dark); }
+#setApiKeyBtn::before { content: "🔑 "; }
+
+/* Make sure spans holding text like frequency are also light */
+.controls span {
+    color: var(--text-color);
+    font-size: 0.9em;
+}
+.controls span > span { /* Target the inner span specifically if needed */
+     font-weight: bold;
+     color: white; /* Make value slightly brighter */
+}
+
+
+.api-key-section .warning { font-size: 0.85em; color: #842029; width: 100%; margin-top: 10px; flex-basis: 100%; line-height: 1.4; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 10px 12px; border-radius: var(--border-radius); }
+
+/* --- Simulation & Analysis Areas --- */
+.simulation-area h2, .analysis-area h2 { text-align: center; margin-bottom: 1.2em; color: var(--text-color); }
+.analysis-area h3 { text-align: center; font-size: 1.1rem; margin-bottom: 10px; color: var(--text-color); /* CHANGED: Make peak list titles light */ font-weight: 500;}
+
+/* Style for sand count paragraph */
+.simulation-area p { text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 1rem; } /* Use light muted color */
+
+#chladniCanvas, #kPlotCanvas { border: 1px solid var(--border-color); background-color: #ffffff; max-width: 100%; height: auto; display: block; margin: 15px auto; box-shadow: var(--box-shadow); border-radius: var(--border-radius); }
+.peak-lists { display: flex; justify-content: space-around; gap: 20px; margin-top: 20px; width: 100%; }
+.peak-lists div { flex: 1; max-width: 48%; }
+.peak-lists ul { list-style: none; padding: 0; margin: 0; max-height: 180px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--border-radius); padding: 10px; background-color: var(--light-bg-for-elements); color: var(--dark-text-on-light); font-size: 0.9em; }
+.peak-lists li { padding: 6px 10px; cursor: pointer; border-bottom: 1px solid #eee; transition: background-color 0.2s ease; }
+.peak-lists li:hover { background-color: #cfe2ff; color: var(--dark-text-on-light);}
+.peak-lists li:last-child { border-bottom: none; }
+
+/* --- Chatbot Interface --- */
+#chatbotContainer { position: fixed; bottom: 25px; right: 25px; z-index: 1000; }
+#toggleChatbotBtn { width: 60px; height: 60px; border-radius: 50%; font-size: 1.8em; padding: 0; background-color: var(--primary-color); color: var(--dark-text); border: 3px solid var(--section-bg); box-shadow: var(--box-shadow-lg); display: flex; justify-content: center; align-items: center; transition: all var(--transition-speed) ease; }
+#toggleChatbotBtn:hover { background-color: var(--primary-dark); color: white; transform: scale(1.05); }
+
+#chatbotWindow { width: 380px; max-width: 90vw; height: 550px; max-height: calc(100vh - 120px); background-color: var(--chatbot-window-bg); color: var(--text-color); border-radius: var(--border-radius); box-shadow: var(--box-shadow-lg); display: flex; flex-direction: column; overflow: hidden; position: absolute; bottom: 80px; right: 0; transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s; opacity: 1; transform: scale(1); transform-origin: bottom right; visibility: visible; border: 1px solid var(--light-blue-grey); }
+#chatbotWindow.hidden { opacity: 0; transform: scale(0.95); visibility: hidden; pointer-events: none; }
+
+#chatMessages { flex-grow: 1; padding: 15px; overflow-y: auto; border-bottom: 1px solid var(--border-color); background-color: var(--section-bg); scroll-behavior: smooth; }
+.message { margin-bottom: 12px; padding: 10px 15px; border-radius: 18px; max-width: 90%; line-height: 1.5; word-wrap: break-word; box-shadow: none; font-size: 0.95em; }
+.message.user { background-color: var(--primary-dark); color: white; align-self: flex-end; margin-left: auto; border-bottom-right-radius: 5px; }
+.message.bot { background-color: var(--medium-blue-grey); color: white; align-self: flex-start; margin-right: auto; border-bottom-left-radius: 5px; }
+/* Markdown styles */
+.message.bot *:first-child { margin-top: 0; } .message.bot *:last-child { margin-bottom: 0; } .message.bot p { margin: 0.7em 0; } .message.bot ul, .message.bot ol { margin: 0.7em 0 0.7em 20px; padding-left: 18px; } .message.bot li { margin-bottom: 0.4em; } .message.bot code { background-color: rgba(240, 242, 245, 0.15); padding: 3px 6px; border-radius: 4px; font-family: monospace; font-size: 0.9em; color: #cde; border: 1px solid rgba(240, 242, 245, 0.2);} .message.bot pre { background-color: rgba(0,0,0, 0.2); color: #f8f9fa; padding: 12px; border-radius: var(--border-radius); overflow-x: auto; font-family: monospace; margin: 0.8em 0; border: 1px solid var(--border-color); font-size: 0.85em; line-height: 1.4; } .message.bot pre code { background-color: transparent; padding: 0; border: none; color: inherit; } .message.bot strong, .message.bot b { font-weight: 700; color: #fff; } .message.bot em, .message.bot i { font-style: italic; } .message.bot h1, .message.bot h2, .message.bot h3, .message.bot h4 { margin: 1.2em 0 0.6em 0; padding-bottom: 0.3em; border-bottom: 1px solid var(--light-blue-grey); color: #fff; font-weight: 700; } .message.bot h1 { font-size: 1.2em; } .message.bot h2 { font-size: 1.1em; } .message.bot h3 { font-size: 1.05em; } .message.bot h4 { font-size: 1em; color: var(--light-blue-grey); border-bottom: none;}
+.message.error { background-color: #5e161b; color: #ffd7d9; border: 1px solid var(--danger-dark); }
+
+#chatInputContainer { display: flex; padding: 10px; border-top: 1px solid var(--light-blue-grey); align-items: center; background-color: var(--section-bg); flex-wrap: nowrap; gap: 8px; }
+#chatInputContainer button { margin: 0; padding: 8px 12px; flex-shrink: 0; font-size: 0.9em; line-height: 1.5; color: white !important; /* Ensure white text */ border: none; box-shadow: none; }
+#chatInputContainer button:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+#chatInputContainer button:active { transform: translateY(0); box-shadow: none; }
+#chatInputContainer button:disabled { background-color: #5a6268 !important; color: #adb5bd !important; transform: none; box-shadow: none;}
+
+#chatInputContainer input[type="text"] { flex-grow: 1; border: 1px solid var(--input-border); border-radius: 18px; padding: 9px 14px; margin: 0; min-width: 50px; font-size: 0.9em; line-height: 1.5; background-color: var(--medium-blue-grey); color: var(--text-color); }
+#chatInputContainer input::placeholder { color: var(--light-blue-grey); opacity: 0.8;}
+#chatInputContainer input[type="text"]:focus { border-color: var(--primary-color); box-shadow: 0 0 0 0.2rem rgba(var(--rgb-primary), 0.35); outline: none; }
+#chatInputContainer label { min-width: auto; margin: 0; display: flex; align-items: center; cursor: pointer; font-size: 0.85em; flex-shrink: 0; white-space: nowrap; color: var(--text-muted); padding: 5px; border-radius: 4px; transition: background-color 0.2s; }
+#chatInputContainer label:hover { background-color: rgba(255, 255, 255, 0.1); }
+#chatInputContainer input[type="checkbox"] { margin-right: 4px; transform: scale(1); margin-left: 3px; filter: brightness(1.5) saturate(0); accent-color: var(--primary-color); }
+#sendChatBtn { background-color: var(--primary-color); color: var(--dark-text) !important; } /* Dark text on light green */
+#sendChatBtn:hover { background-color: var(--primary-dark); color: white !important; }
+#analyzeScreenBtn { background-color: var(--info-color); color: white !important;}
+#analyzeScreenBtn:hover { background-color: var(--info-dark); }
+
+#aiStatus { font-size: 0.8em; color: var(--text-muted); padding: 4px 10px; text-align: center; background-color: var(--section-bg); border-top: 1px solid var(--border-color); }
+#aiStatus.thinking { color: var(--primary-color); font-weight: 500; }
+#aiStatus.error { color: var(--danger-color); font-weight: 500; }
+
+
+/* --- Responsive Design --- */
+@media (min-width: 768px) { .container { grid-template-columns: minmax(300px, 1fr) 2fr minmax(320px, 1fr); gap: 25px; padding: 25px; } .controls { grid-column: 1 / 2; } .simulation-area { grid-column: 2 / 3; } .analysis-area { grid-column: 3 / 4; } #chatbotWindow { width: 400px; } }
+@media (min-width: 1200px) { .container { grid-template-columns: 360px 2.5fr 1.5fr; gap: 30px; padding: 30px; } header h1 { font-size: 1.8rem; } h2 { font-size: 1.6rem; } h3 { font-size: 1.25rem; } body { font-size: var(--base-font-size); } }
+@media (max-width: 767.98px) { body { padding: 0; margin: 0;} header h1 { font-size: 1.3rem; padding: 0.7rem 1rem; } .container { padding: 15px; gap: 15px; margin: 10px 0; } .controls, .simulation-area, .analysis-area { padding: 15px; } h2 { font-size: 1.3rem; } h3 { font-size: 1.1rem; } .controls label { min-width: 100px; font-size: 0.85em;} .controls .control-item { gap: 6px 10px; margin-bottom: 12px; } .controls input[type="number"] { width: 70px; padding: 7px 8px; font-size: 0.85em; } .controls input[type="password"], .controls input[type="text"] { min-width: 100px; padding: 7px 10px; font-size: 0.85em; } .controls button { font-size: 0.85em; padding: 7px 12px; gap: 4px;} .peak-lists { flex-direction: column; gap: 10px;} .peak-lists div { max-width: 100%; } .peak-lists ul { max-height: 140px; padding: 6px;} .peak-lists li { padding: 4px 8px;} #chatbotContainer { bottom: 10px; right: 10px; } #chatbotWindow { width: calc(100vw - 20px); max-width: 380px; height: clamp(350px, 60vh, 450px); bottom: 70px; } #toggleChatbotBtn { width: 50px; height: 50px; font-size: 1.6em; } #chatInputContainer { flex-wrap: wrap; gap: 6px; padding: 8px;} #chatInputContainer input[type="text"] { flex-basis: 100%; order: 1; min-width: 0; } #chatInputContainer button { order: 2; font-size: 0.8em; padding: 6px 8px;} #chatInputContainer label { order: 3; font-size: 0.8em;} }
